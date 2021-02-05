@@ -36,8 +36,8 @@ const SquaresBoard = () => {
           ? "The Game is a draw"
           : winOrLose
           ? winOrLose === "X"
-            ? "You are the winner"
-            : "AI is the winner"
+            ? "You Win"
+            : "AI Won"
           : ""
       );
       if (!isBoardFull(oneDEngDataArr)) setSquaresValue(oneDEngDataArr);

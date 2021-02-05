@@ -1,4 +1,7 @@
-/** Construct the matrix */
+/**
+ * Construct the matrix
+ * @param {integer} number - the matrix size
+ */
 export const constructSquare = (number) => {
   const numberOfSquares = number * number;
   let squareArray = [];
@@ -23,7 +26,10 @@ const winningSquareCombos = [
   [2, 4, 6],
 ];
 
-/** To check if all the squares are filled */
+/**
+ * To check if all the squares are filled
+ * @param {Array} squares - the squares in the board
+ */
 export const isBoardFull = (squares) => {
   for (let i = 0; i < squares.length; i++) {
     if (squares[i] === "") {
@@ -33,7 +39,10 @@ export const isBoardFull = (squares) => {
   return true;
 };
 
-/** To calculate the winner */
+/**
+ * To check if all the squares are filled
+ * @param {Array} squares - the squares in the board
+ */
 export const calculateWinner = (squares) => {
   for (let i = 0; i < winningSquareCombos.length; i++) {
     const [a, b, c] = winningSquareCombos[i];
@@ -44,7 +53,10 @@ export const calculateWinner = (squares) => {
   return null;
 };
 
-/** Spread a 2D array into 1D array */
+/**
+ * Spread a 2D array into 1D array
+ * @param {Array} twoDArray
+ */
 export const twoDArraytoOneD = (twoDArray) => {
   return [].concat.apply([], twoDArray);
 };

@@ -3,12 +3,11 @@ import { Layout, Button } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import SquaresBoard from "./GameComponents/SquaresBoard";
-import { constructSquare } from "./GameComponents/GameUtils/UtilFunctions";
 
+/** Display the layout for the game page */
 const { Header, Content } = Layout;
 const GamePage = () => {
   const history = useHistory();
-  constructSquare(3);
   return (
     <div style={{ color: "#008080" }}>
       <Layout style={{ minHeight: "100vh" }}>
