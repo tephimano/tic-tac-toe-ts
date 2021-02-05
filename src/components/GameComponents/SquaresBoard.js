@@ -1,9 +1,8 @@
 import { Button, Col, Row, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { usePostQuery } from "../hooks/useAxiosQuery";
 import SquareButton from "./SquareButton";
-import "../styles/TTTBoard.css";
 import { isBoardFull, calculateWinner } from "./GameUtils/UtilFunctions";
+import { usePostQuery } from "../../hooks/useAxiosQuery";
 
 const SquaresBoard = () => {
   const [squaresValue, setSquaresValue] = useState(Array(9).fill(null));
@@ -21,49 +20,57 @@ const SquaresBoard = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("Engine data ", data);
+      console.log("Data from the game ai engine ", data);
       const aiData = data.board;
-      const status = data.status;
-      if (status) {
-        const oneD = [].concat.apply([], aiData);
-        console.log("One D", oneD);
-        const winOrLose = calculateWinner(oneD) || isBoardFull(oneD);
-        setStatus(
-          winOrLose === true ? "The Game is a draw" : winOrLose ? winOrLose + " is the winner" : ""
-        );
-        if (!isBoardFull(oneD)) setSquaresValue(oneD);
-      }
+      const aiStatus = data.status;
+
+      const oneDEngDataArr = [].concat.apply([], aiData);
+      console.log("One D", oneDEngDataArr);
+      const winOrLose = calculateWinner(oneDEngDataArr) || isBoardFull(oneDEngDataArr);
+      setStatus(
+        winOrLose === true
+          ? "The Game is a draw"
+          : winOrLose
+          ? winOrLose === "X"
+            ? "You are the winner"
+            : "AI is the winner"
+          : ""
+      );
+      if (!isBoardFull(oneDEngDataArr)) setSquaresValue(oneDEngDataArr);
     }
   }, [data]);
 
+  // when the player selects a vacant square and the state changes, request is sent to ai to fetch the next move
   useEffect(() => {
     if (engineBody && engineBody.length > 0) refetch();
   }, [engineBody, refetch]);
 
+  // for logging
   useEffect(() => {
-    console.log(squaresValue, "Changed", highlight);
+    console.log("State changes of squares ", squaresValue, highlight);
   }, [squaresValue, highlight]);
 
+  // handle click on the squares
   const handleClick = (index) => {
-    console.log("Button ", index);
+    console.log("Clicked Button ", index);
     const squares = [...squaresValue];
     //console.log(squares);
     if (squares[index] || calculateWinner(squaresValue)) return;
     squares[index] = "X";
-    const fillValues = squares;
-    let fillarr = [];
+    const fillNullValuesWithEmptyString = squares;
+    let filledArr = [];
     let i = 0;
-    fillValues.map((value) => {
+    fillNullValuesWithEmptyString.map((value) => {
       //may be foreach
       value = value === null ? "" : value;
-      fillarr[i++] = value;
+      filledArr[i++] = value;
       console.log("Value : ", value);
       return value;
     });
-    console.log(fillarr);
+    console.log(filledArr);
     const newArr = [];
-    while (fillarr.length) newArr.push(fillarr.splice(0, 3));
-    console.log("Filled values", fillValues, newArr);
+    while (filledArr.length) newArr.push(filledArr.splice(0, 3));
+    console.log("Filled values", fillNullValuesWithEmptyString, newArr);
     setEngineBody(newArr);
     setSquaresValue(squares);
     //refetch();
@@ -129,7 +136,9 @@ const SquaresBoard = () => {
         </div>
       ) : (
         <div>
-          <div style={{ color: "red" }}>{status ? status : "Hello"}</div>
+          <div style={{ color: "green", textAlign: "center", fontStyle: "italic" }}>
+            {status ? status : ""}
+          </div>
           <Row>
             <Col>{displaySquare(0)}</Col>
             <Col>{displaySquare(1)}</Col>
@@ -145,11 +154,13 @@ const SquaresBoard = () => {
             <Col>{displaySquare(7)}</Col>
             <Col>{displaySquare(8)}</Col>
           </Row>
-          <Button type="primary" onClick={resetGame}>
-            Reset Game
-          </Button>
+          <div style={{ textAlign: "center", paddingTop: "25px" }}>
+            <Button type="primary" onClick={resetGame}>
+              Reset Game
+            </Button>
+          </div>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };

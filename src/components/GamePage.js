@@ -2,6 +2,7 @@ import React from "react";
 import { Layout, Button } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
+import SquaresBoard from "./GameComponents/SquaresBoard";
 
 const { Header, Content } = Layout;
 const GamePage = () => {
@@ -15,14 +16,14 @@ const GamePage = () => {
               type="primary"
               icon={<LogoutOutlined />}
               onClick={() => {
-                sessionStorage.removeItem("token");
-                history.push("/");
+                console.log("Logout Button Pushed");
+                history.push("/logout");
               }}
             />
           </div>
         </Header>
         <Content>
-          <div className="center-content">Game is displayed here</div>
+          <SquaresBoard />
         </Content>
       </Layout>
     </div>

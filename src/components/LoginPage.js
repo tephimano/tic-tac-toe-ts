@@ -37,8 +37,9 @@ const LoginPage = () => {
   if (error) console.log(error);
 
   const onFinish = (values) => {
+    console.log("Login Form values : ", values);
+    setEmail(values.email);
     refetch();
-    console.log("Success:", values);
   };
 
   return (

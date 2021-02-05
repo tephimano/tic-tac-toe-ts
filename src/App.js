@@ -2,8 +2,9 @@ import "./App.css";
 import LoginPage from "./components/LoginPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import GamePage from "./components/GamePage";
+import ProtectedPage from "./components/ProtectedPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,12 +24,21 @@ function App() {
     <div className="app-content">
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <Router>
+        <BrowserRouter forceRefresh={true}>
           <Switch>
             <Route path="/" component={LoginPage} exact />
-            <Route path="/game-page" component={GamePage} exact />
+            <ProtectedPage path="/game-page" component={GamePage} exact />
+            <Route
+              path="/logout"
+              render={(props) => {
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("email");
+                return <Redirect to="/" />;
+              }}
+              exact
+            />
           </Switch>
-        </Router>
+        </BrowserRouter>
       </QueryClientProvider>
     </div>
   );
