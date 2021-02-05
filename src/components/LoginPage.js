@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button } from "antd";
 import "../styles/LoginPage.css";
+import { useHistory } from "react-router-dom";
+import { usePostQuery } from "../hooks/useAxiosQuery";
 
 /** Displays the login screen of the app */
 const layout = {
@@ -11,9 +13,34 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 const LoginPage = () => {
+  const history = useHistory();
+  const [email, setEmail] = useState("");
+  const { data, error, refetch } = usePostQuery(
+    "auth",
+    "auth",
+    "/auth",
+    { email: email },
+    { enabled: false }
+  );
+
+  useEffect(() => {
+    if (data) {
+      if (data && data.success === true && data.token) {
+        setEmail(email);
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("token", "Bearer " + data.token);
+        history.push("/game-page");
+      }
+    }
+  }, [data, history, email]);
+
+  if (error) console.log(error);
+
   const onFinish = (values) => {
+    refetch();
     console.log("Success:", values);
   };
+
   return (
     <div className="center-content">
       <h2> Please Enter your email to Login! </h2>
