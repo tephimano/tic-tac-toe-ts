@@ -32,7 +32,7 @@ const LoginPage = () => {
             },
           ]}
         >
-          <Input />
+          <Input size="large" />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
