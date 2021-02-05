@@ -1,3 +1,15 @@
+export const constructSquare = (number) => {
+  const numberOfSquares = number * number;
+  let squareArray = [];
+  for (let i = 0; i < numberOfSquares; i++) {
+    squareArray[i] = i;
+  }
+  const matrixSquare = [];
+  while (squareArray.length) matrixSquare.push(squareArray.splice(0, number));
+  console.log(matrixSquare);
+  return matrixSquare;
+};
+
 /** Winning combination of squares */
 const winningSquareCombos = [
   [0, 1, 2],
@@ -29,4 +41,9 @@ export const calculateWinner = (squares) => {
     }
   }
   return null;
+};
+
+/** Spread a 2D array into 1D array */
+export const twoDArraytoOneD = (twoDArray) => {
+  return [].concat.apply([], twoDArray);
 };

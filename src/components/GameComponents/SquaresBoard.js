@@ -1,9 +1,15 @@
 import { Button, Col, Row, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import SquareButton from "./SquareButton";
-import { isBoardFull, calculateWinner } from "./GameUtils/UtilFunctions";
+import {
+  isBoardFull,
+  calculateWinner,
+  twoDArraytoOneD,
+  constructSquare,
+} from "./GameUtils/UtilFunctions";
 import { usePostQuery } from "../../hooks/useAxiosQuery";
 
+const square = constructSquare(3);
 const SquaresBoard = () => {
   const [squaresValue, setSquaresValue] = useState(Array(9).fill(null));
   const [engineBody, setEngineBody] = useState([]);
@@ -22,9 +28,7 @@ const SquaresBoard = () => {
     if (data) {
       console.log("Data from the game ai engine ", data);
       const aiData = data.board;
-      const aiStatus = data.status;
-
-      const oneDEngDataArr = [].concat.apply([], aiData);
+      const oneDEngDataArr = twoDArraytoOneD(aiData);
       console.log("One D", oneDEngDataArr);
       const winOrLose = calculateWinner(oneDEngDataArr) || isBoardFull(oneDEngDataArr);
       setStatus(
@@ -54,44 +58,44 @@ const SquaresBoard = () => {
   const handleClick = (index) => {
     console.log("Clicked Button ", index);
     const squares = [...squaresValue];
-    //console.log(squares);
+    // value (X/O) already present in the clicked square or a winner is decided diable the squares
     if (squares[index] || calculateWinner(squaresValue)) return;
     squares[index] = "X";
     const fillNullValuesWithEmptyString = squares;
     let filledArr = [];
     let i = 0;
-    fillNullValuesWithEmptyString.map((value) => {
-      //may be foreach
+    fillNullValuesWithEmptyString.forEach((value) => {
       value = value === null ? "" : value;
       filledArr[i++] = value;
-      console.log("Value : ", value);
       return value;
     });
-    console.log(filledArr);
-    const newArr = [];
-    while (filledArr.length) newArr.push(filledArr.splice(0, 3));
-    console.log("Filled values", fillNullValuesWithEmptyString, newArr);
-    setEngineBody(newArr);
+    const convertToTwoD = [];
+    while (filledArr.length) convertToTwoD.push(filledArr.splice(0, 3));
+    console.log("Filled values", fillNullValuesWithEmptyString, convertToTwoD);
+    // Because AI needs a 2d array
+    setEngineBody(convertToTwoD);
     setSquaresValue(squares);
     //refetch();
   };
 
+  /** OnMouse out after highlighting the rows and columns */
   const onMouseOut = (index) => {
     console.log("MouseOut", index);
     let arr = Array(9).fill(0);
     setHighLight(arr);
   };
 
+  /** To highlight rows and columns */
   const onMouseOver = (index) => {
     console.log("Mouse Over", index);
     let arr = Array(9).fill(0);
     arr[index] = 1;
-    console.log("Current arr ", arr);
-    const newArr = [];
-    while (arr.length) newArr.push(arr.splice(0, 3));
-    console.log(newArr);
+    const twoDArray = [];
+    while (arr.length) twoDArray.push(arr.splice(0, 3));
+    console.log(twoDArray);
     let [rowX, colY] = [0, 0];
-    newArr.forEach((item, x) => {
+    //find the x, y position of the hovered square
+    twoDArray.forEach((item, x) => {
       const row = item;
       row.forEach((rowItem, y) => {
         if (rowItem === 1) {
@@ -100,14 +104,13 @@ const SquaresBoard = () => {
         }
       });
     });
+    // find the row and column of the hovered square
     for (let i = 0; i < 3; i++) {
-      newArr[rowX][i] = 1;
-      newArr[i][colY] = 1;
+      twoDArray[rowX][i] = 1;
+      twoDArray[i][colY] = 1;
     }
-    console.log(rowX, colY, newArr);
-    const high = [].concat.apply([], newArr);
-    console.log("Spread", high);
-    setHighLight(high);
+    console.log(rowX, colY, twoDArray);
+    setHighLight(twoDArraytoOneD(twoDArray));
   };
 
   const displaySquare = (index) => {
@@ -136,10 +139,19 @@ const SquaresBoard = () => {
         </div>
       ) : (
         <div>
-          <div style={{ color: "green", textAlign: "center", fontStyle: "italic" }}>
+          <div style={{ color: "#F2A30F", textAlign: "center", fontStyle: "italic" }}>
             {status ? status : ""}
           </div>
-          <Row>
+          {square.map((x, index) => {
+            return (
+              <Row key={index}>
+                {x.map((y) => {
+                  return <Col key={y}>{displaySquare(y)}</Col>;
+                })}
+              </Row>
+            );
+          })}
+          {/*    <Row>
             <Col>{displaySquare(0)}</Col>
             <Col>{displaySquare(1)}</Col>
             <Col>{displaySquare(2)}</Col>
@@ -153,7 +165,7 @@ const SquaresBoard = () => {
             <Col>{displaySquare(6)}</Col>
             <Col>{displaySquare(7)}</Col>
             <Col>{displaySquare(8)}</Col>
-          </Row>
+          </Row> */}
           <div style={{ textAlign: "center", paddingTop: "25px" }}>
             <Button type="primary" onClick={resetGame}>
               Reset Game
