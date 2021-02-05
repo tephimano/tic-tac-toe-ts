@@ -1,3 +1,4 @@
+/** Construct the matrix */
 export const constructSquare = (number) => {
   const numberOfSquares = number * number;
   let squareArray = [];
