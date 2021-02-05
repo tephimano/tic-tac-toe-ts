@@ -17,4 +17,4 @@ If I had more time, I would do
 4. In production ideally the react app would be hosted in a web server like a Express JS app with the routes setup to communicate with the AI engine
 5. Improve the user experience to show the position of the move in a matrix
 6. Write unit tests for the components and util functions before creating the project
-7. Show spinner and disable the board so the user can see the board even if the request to ui is loading but can't click.
+7. Show spinner and disable the board so the user can see the board while the request to ui is loading but can't click the squares.
