@@ -10,6 +10,7 @@ import {
 } from "./GameUtils/UtilFunctions";
 import { usePostQuery } from "../../hooks/useAxiosQuery";
 import { useHistory } from "react-router-dom";
+import position from "../../images/position.png";
 
 // Displays the matrix
 const square = constructSquare(3);
@@ -183,7 +184,12 @@ const SquaresBoard = () => {
               }}
             >
               {suggestedMove ? (
-                <div>Place X in position {suggestedMove} </div>
+                <div style={{ textAlign: "center" }}>
+                  <span>
+                    <img src={position} alt="position" width="100px" height="100px" />
+                  </span>
+                  <span style={{ margin: "20px" }}>Place X in position {suggestedMove} </span>
+                </div>
               ) : (
                 <div>No Moves to suggest</div>
               )}
