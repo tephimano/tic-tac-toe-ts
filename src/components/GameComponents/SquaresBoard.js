@@ -20,11 +20,17 @@ const square = constructSquare(3);
 const SquaresBoard = () => {
   const history = useHistory();
   console.log(history);
+  // state to store value of the squares
   const [squaresValue, setSquaresValue] = useState(Array(9).fill(null));
+  // state to store data for request body
   const [engineBody, setEngineBody] = useState([]);
+  // store state to highlight rows and columns
   const [highlight, setHighLight] = useState([]);
+  // store suggested move
   const [suggestedMove, setSuggestedMove] = useState(null);
+  // to show / hide modal for Suggested move
   const [modalVisible, setModalVisible] = useState(false);
+  // win/lose/draw status
   const [status, setStatus] = useState(null);
 
   const { data, error, isLoading, refetch } = usePostQuery(
