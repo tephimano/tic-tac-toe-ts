@@ -63,7 +63,11 @@ const LoginPage = () => {
           <Input size="large" />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ background: "#2eaf7d", border: "1px solid #2eaf7d" }}
+          >
             Submit
           </Button>
         </Form.Item>

@@ -4,8 +4,8 @@ import React from "react";
 const SquareButton = ({ value, hover, onClick, onMouseOver, onMouseOut }) => {
   const style =
     hover === 1
-      ? { width: "75px", height: "75px", border: "2px solid #fff", background: "blue" }
-      : { width: "75px", height: "75px", border: "2px solid #fff" };
+      ? { width: "75px", height: "75px", border: "2px solid #fff", background: "#02353c" }
+      : { width: "75px", height: "75px", border: "2px solid #fff", background: "#2eaf7d" };
   return (
     <Button
       type="primary"

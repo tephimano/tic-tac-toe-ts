@@ -15,6 +15,7 @@ const GamePage = () => {
           <div style={{ float: "right" }}>
             <Button
               type="primary"
+              style={{ background: "#2eaf7d", border: "1px solid #2eaf7d" }}
               icon={<LogoutOutlined />}
               onClick={() => {
                 console.log("Logout Button Pushed");

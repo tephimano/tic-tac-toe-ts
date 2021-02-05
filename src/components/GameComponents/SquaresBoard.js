@@ -9,6 +9,7 @@ import {
   suggestMoves,
 } from "./GameUtils/UtilFunctions";
 import { usePostQuery } from "../../hooks/useAxiosQuery";
+import { useHistory } from "react-router-dom";
 
 // Displays the matrix
 const square = constructSquare(3);
@@ -17,6 +18,8 @@ const square = constructSquare(3);
  * Component to display the board
  */
 const SquaresBoard = () => {
+  const history = useHistory();
+  console.log(history);
   const [squaresValue, setSquaresValue] = useState(Array(9).fill(null));
   const [engineBody, setEngineBody] = useState([]);
   const [highlight, setHighLight] = useState([]);
@@ -31,6 +34,14 @@ const SquaresBoard = () => {
     { board: engineBody },
     { enabled: false }
   );
+
+  // if sessionStorage doesnt have the token or if the AI responds with 401 or 403, logout
+  if (
+    !sessionStorage.getItem("token") ||
+    (error && error.message && (error.message.includes("401") || error.message.includes("403")))
+  ) {
+    history.push("/logout");
+  }
 
   useEffect(() => {
     if (data) {
@@ -148,7 +159,9 @@ const SquaresBoard = () => {
         </div>
       ) : (
         <div>
-          <div style={{ color: "#F2A30F", textAlign: "center", fontStyle: "italic" }}>
+          <div
+            style={{ color: "#001818", textAlign: "center", fontStyle: "bold", fontSize: "20px" }}
+          >
             {status ? status : ""}
           </div>
           <div>
@@ -179,14 +192,24 @@ const SquaresBoard = () => {
               </Row>
             );
           })}
-          <div style={{ textAlign: "center", marginTop: "5px" }}>
-            <Button type="primary" style={{ padding: "5px" }} onClick={resetGame}>
+          <div style={{ float: "center", marginTop: "5px" }}>
+            <Button
+              type="primary"
+              style={{
+                marginRight: "5px",
+                marginLeft: "-3px",
+                background: "#FFF",
+                color: "#02353c",
+                border: "1px solid #2eaf7d",
+              }}
+              onClick={resetGame}
+            >
               Reset Game
             </Button>
             <Button
               type="primary"
-              style={{ padding: "5px" }}
               disabled={status}
+              style={{ background: "#FFF", color: "#02353c", border: "1px solid #2eaf7d" }}
               onClick={() => {
                 if (status) return;
                 const suggMove = suggestMoves(squaresValue);
