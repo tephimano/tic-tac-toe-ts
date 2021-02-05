@@ -1,4 +1,4 @@
-import { Button, Col, Row, Spin } from "antd";
+import { Button, Col, Row, Spin, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import SquareButton from "./SquareButton";
 import {
@@ -10,11 +10,18 @@ import {
 } from "./GameUtils/UtilFunctions";
 import { usePostQuery } from "../../hooks/useAxiosQuery";
 
+// Displays the matrix
 const square = constructSquare(3);
+
+/**
+ * Component to display the board
+ */
 const SquaresBoard = () => {
   const [squaresValue, setSquaresValue] = useState(Array(9).fill(null));
   const [engineBody, setEngineBody] = useState([]);
   const [highlight, setHighLight] = useState([]);
+  const [suggestedMove, setSuggestedMove] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [status, setStatus] = useState(null);
 
   const { data, error, isLoading, refetch } = usePostQuery(
@@ -30,14 +37,14 @@ const SquaresBoard = () => {
       console.log("Data from the game ai engine ", data);
       const aiData = data.board;
       const oneDEngDataArr = twoDArraytoOneD(aiData);
-      const winOrLose = calculateWinner(oneDEngDataArr) || isBoardFull(oneDEngDataArr);
+      const winLoseOrDraw = calculateWinner(oneDEngDataArr) || isBoardFull(oneDEngDataArr);
       setStatus(
-        winOrLose === true
+        winLoseOrDraw === true
           ? "The Game is a draw"
-          : winOrLose
-          ? winOrLose === "X"
-            ? "You Win"
-            : "AI Won"
+          : winLoseOrDraw
+          ? winLoseOrDraw === "X"
+            ? "You win"
+            : "AI win"
           : ""
       );
       if (!isBoardFull(oneDEngDataArr)) setSquaresValue(oneDEngDataArr);
@@ -79,14 +86,12 @@ const SquaresBoard = () => {
 
   /** OnMouse out after highlighting the rows and columns */
   const onMouseOut = (index) => {
-    console.log("MouseOut", index);
     let arr = Array(9).fill(0);
     setHighLight(arr);
   };
 
   /** To highlight rows and columns */
   const onMouseOver = (index) => {
-    console.log("Mouse Over", index);
     let arr = Array(9).fill(0);
     arr[index] = 1;
     const twoDArray = [];
@@ -112,6 +117,10 @@ const SquaresBoard = () => {
     setHighLight(twoDArraytoOneD(twoDArray));
   };
 
+  /**
+   * Display the square on the board
+   * @param {number} index
+   */
   const displaySquare = (index) => {
     return (
       <SquareButton
@@ -124,6 +133,7 @@ const SquaresBoard = () => {
     );
   };
 
+  // refreshes the page, could be done with resetting the state
   const resetGame = () => {
     window.location.reload();
   };
@@ -141,6 +151,25 @@ const SquaresBoard = () => {
           <div style={{ color: "#F2A30F", textAlign: "center", fontStyle: "italic" }}>
             {status ? status : ""}
           </div>
+          <div>
+            <Modal
+              title="Suggested Move"
+              visible={modalVisible}
+              cancelButtonProps={{ style: { display: "none" } }}
+              onOk={() => {
+                setModalVisible(false);
+              }}
+              onCancel={() => {
+                setModalVisible(false);
+              }}
+            >
+              {suggestedMove ? (
+                <div>Place X in position {suggestedMove} </div>
+              ) : (
+                <div>No Moves to suggest</div>
+              )}
+            </Modal>
+          </div>
           {square.map((x, index) => {
             return (
               <Row key={index}>
@@ -150,21 +179,6 @@ const SquaresBoard = () => {
               </Row>
             );
           })}
-          {/*    <Row>
-            <Col>{displaySquare(0)}</Col>
-            <Col>{displaySquare(1)}</Col>
-            <Col>{displaySquare(2)}</Col>
-          </Row>
-          <Row>
-            <Col>{displaySquare(3)}</Col>
-            <Col>{displaySquare(4)}</Col>
-            <Col>{displaySquare(5)}</Col>
-          </Row>
-          <Row>
-            <Col>{displaySquare(6)}</Col>
-            <Col>{displaySquare(7)}</Col>
-            <Col>{displaySquare(8)}</Col>
-          </Row> */}
           <div style={{ textAlign: "center", marginTop: "5px" }}>
             <Button type="primary" style={{ padding: "5px" }} onClick={resetGame}>
               Reset Game
@@ -172,9 +186,12 @@ const SquaresBoard = () => {
             <Button
               type="primary"
               style={{ padding: "5px" }}
+              disabled={status}
               onClick={() => {
                 if (status) return;
-                const suggestedMove = suggestMoves(squaresValue);
+                const suggMove = suggestMoves(squaresValue);
+                setSuggestedMove(suggMove);
+                setModalVisible(true);
                 console.log("suggested move ", suggestedMove);
               }}
             >
