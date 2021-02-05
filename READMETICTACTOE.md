@@ -18,3 +18,4 @@ If I had more time, I would do
 5. Improve the user experience to show the position of the move in a matrix
 6. Write unit tests for the components and util functions before creating the project
 7. Show spinner and disable the board so the user can see the board while the request to ui is loading but can't click the squares.
+8. Validate the email by code using onChange method in the Input and using regex to validate the email
