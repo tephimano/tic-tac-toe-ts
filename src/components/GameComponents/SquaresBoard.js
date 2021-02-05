@@ -6,6 +6,7 @@ import {
   calculateWinner,
   twoDArraytoOneD,
   constructSquare,
+  suggestMoves,
 } from "./GameUtils/UtilFunctions";
 import { usePostQuery } from "../../hooks/useAxiosQuery";
 
@@ -29,7 +30,6 @@ const SquaresBoard = () => {
       console.log("Data from the game ai engine ", data);
       const aiData = data.board;
       const oneDEngDataArr = twoDArraytoOneD(aiData);
-      console.log("One D", oneDEngDataArr);
       const winOrLose = calculateWinner(oneDEngDataArr) || isBoardFull(oneDEngDataArr);
       setStatus(
         winOrLose === true
@@ -62,11 +62,10 @@ const SquaresBoard = () => {
     if (squares[index] || calculateWinner(squaresValue)) return;
     squares[index] = "X";
     const fillNullValuesWithEmptyString = squares;
-    let filledArr = [];
-    let i = 0;
+    let [filledArr, iterator] = [[], 0];
     fillNullValuesWithEmptyString.forEach((value) => {
       value = value === null ? "" : value;
-      filledArr[i++] = value;
+      filledArr[iterator++] = value;
       return value;
     });
     const convertToTwoD = [];
@@ -166,9 +165,20 @@ const SquaresBoard = () => {
             <Col>{displaySquare(7)}</Col>
             <Col>{displaySquare(8)}</Col>
           </Row> */}
-          <div style={{ textAlign: "center", paddingTop: "25px" }}>
-            <Button type="primary" onClick={resetGame}>
+          <div style={{ textAlign: "center", marginTop: "5px" }}>
+            <Button type="primary" style={{ padding: "5px" }} onClick={resetGame}>
               Reset Game
+            </Button>
+            <Button
+              type="primary"
+              style={{ padding: "5px" }}
+              onClick={() => {
+                if (status) return;
+                const suggestedMove = suggestMoves(squaresValue);
+                console.log("suggested move ", suggestedMove);
+              }}
+            >
+              Suggest Move
             </Button>
           </div>
         </div>

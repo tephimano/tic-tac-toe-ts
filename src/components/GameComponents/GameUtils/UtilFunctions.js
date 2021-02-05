@@ -54,6 +54,35 @@ export const calculateWinner = (squares) => {
 };
 
 /**
+ * To check if all the squares are filled
+ * @param {Array} squares - the squares in the board
+ */
+export const suggestMoves = (squares) => {
+  const filterEmpty = squares.filter((square) => square !== "X" && square !== "O");
+  if (filterEmpty && filterEmpty.length === 1) {
+    let matchedIndex;
+    squares.forEach((item, index) => {
+      if (item === "") matchedIndex = index;
+    });
+    return matchedIndex;
+  }
+  for (let i = 0; i < winningSquareCombos.length; i++) {
+    const [a, b, c] = winningSquareCombos[i];
+    if (
+      (squares[a] === "O" && squares[b] === "O") ||
+      (squares[b] === "O" && squares[c] === "O") ||
+      (squares[a] === "O" && squares[c] === "O")
+    ) {
+      const suggestedMove = winningSquareCombos[i].filter((item) => {
+        return squares[item] !== "O";
+      });
+      if (squares[suggestedMove] !== "X") return suggestedMove;
+    }
+  }
+  return null;
+};
+
+/**
  * Spread a 2D array into 1D array
  * @param {Array} twoDArray
  */
