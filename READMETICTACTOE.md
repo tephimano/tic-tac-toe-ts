@@ -9,7 +9,7 @@ Features in the project
 7. Handled lost token errors
 8. Used Ant Design Library for the components
 
-If i had more time, I would do
+If I had more time, I would do
 
 1. Add an error boundary
 2. Create an algorithm to calculate the winning moves
